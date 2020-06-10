@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "mybatis-3-mapper.dtd" >
+
+<mapper namespace="cn.com.oa.mapperForAndroid.StaffMapperForAndroid">
+
+<resultMap type="StaffMoreProperty" id="staffResult">
+	<id column="sfId" property="sfId"/>
+	<result column="sfUserName" property="sfUserName"/>
+	<result column="sfPassword" property="sfPassword"/>
+	<result column="sfRealName" property="sfRealName"/>
+	<result column="sfSex" property="sfSex"/>
+	<result column="sfCard" property="sfCard"/>
+	<result column="sfPhone" property="sfPhone"/>
+	<result column="sfAddress" property="sfAddress"/>
+	<result column="sfEmail" property="sfEmail"/>
+	
+	<!-- <association property="dpmId" javaType="Department"> -->
+		<result column="dpmId" property="dpmId"/>
+		<result column="dpmName" property="dpmName"/>
+		<result column="dpmDescription" property="dpmDescription"/>
+		<result column="dpmCreatDate" property="dpmCreatDate"/>
+		<result column="parentId" property="parentId"/>
+		<result column="dpmLevel" property="dpmLevel"/>
+	<!-- </association> -->
+	
+	<!-- <association property="roleId" javaType="Role"> -->
+		<result column="roleId" property="roleId"/>
+		<result column="roleName" property="roleName"/>
+		<result column="roleDescription" property="roleDescription"/>
+		<result column="roleLevel" property="roleLevel"/>
+	<!-- </association> -->
+	
+</resultMap>
+
+	<!-- 根据用户名和密码查询员工 -->
+	<select id="getStaffByNameAndPassword" resultMap="staffResult">
+		select s.*,d.dpmName,d.dpmDescription,d.dpmCreatDate,d.parentId,d.dpmLevel,r.roleName,r.roleDescription,r.roleLevel 
+		from staff s,department d,role r where s.dpmId=d.dpmId and s.roleId=r.roleId and
+		s.sfUserName=#{param1} and s.sfPassword=#{param2}
+	</select>
+	
+	<!-- 根据id查询员工的具体信息 -->
+	<select id="findStaffById" parameterType="int" resultType="StaffInfo">
+		select s.sfId,s.sfUserName,s.sfRealName,s.sfSex,s.sfCard,s.sfPhone,s.sfAddress,s.sfEmail,d.dpmName,r.roleName
+		from staff s,department d,role r where s.sfId=#{sfId} and s.dpmId=d.dpmId and s.roleId=r.roleId
+	</select>
+	
+	<!-- 根据dpmId查询员工 -->
+	<select id="findStaffByDpmId" parameterType="int" resultType="StaffDateBase">
+		SELECT * FROM staff WHERE dpmId=#{dpmId}
+	</select>
+	
+	<!-- 查询所有员工的信息 -->
+	<select id="selectAllStaff" resultType="StaffInfo">
+		select s.*,d.dpmName,d.dpmDescription,d.dpmCreatDate,d.dpmLevel,r.roleName,r.roleDescription,r.roleLevel 
+		from staff s,department d,role r where s.dpmId=d.dpmId and s.roleId=r.roleId
+	</select>
+	
+
+	<!--  修改个人性别-->
+	<update id="updateSex">
+		UPDATE staff SET sfSex= #{sfSex} WHERE sfId=#{sfId}
+	</update>
+	
+	<!--  修改个人手机号码-->
+	<update id="updatePhone">
+		UPDATE staff SET sfPhone= #{sfPhone} WHERE sfId=#{sfId}
+	</update>
+	
+	<!--  修改个人地址-->
+	<update id="updateAddress">
+		UPDATE staff SET sfAddress= #{sfAddress} WHERE sfId=#{sfId}
+	</update>
+	
+	<!--  修改个人电子邮箱-->
+	<update id="updateEmail">
+		UPDATE staff SET sfEmail= #{sfEmail} WHERE sfId=#{sfId}
+	</update>
+	
+  	
+</mapper>

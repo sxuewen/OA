@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "mybatis-3-mapper.dtd" >
+
+<mapper namespace="cn.com.oa.mapper.PowerMapper">
+
+<select id="findPowerByCondition" resultType="power">
+	select * from power where dpmLevel=#{param1} and roleLevel=#{param2}
+</select>
+  	
+</mapper>

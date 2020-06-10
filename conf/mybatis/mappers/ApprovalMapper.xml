@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "mybatis-3-mapper.dtd" >
+
+<mapper namespace="cn.com.oa.mapper.ApprovalMapper">
+		
+  	<select id="findCountBysfId" resultType="int">
+  		select count(*) from approval where sfId=#{param1} and createDate like "%"#{param2}"%"
+  	</select>
+  	
+  	<select id="findApprovalVoBysfId" resultType="ApprovalVo">
+  		select a.*,t.appTypeName,s.sfRealName,d.dpmName,r.roleName
+  		from approval a,approvalType t,staff s,department d,role r
+  		where a.sfId=s.sfId and a.appTypeId=t.appTypeId and s.dpmId=d.dpmId and s.roleId=r.roleId
+  		and a.sfId=#{param1} and a.createDate like "%"#{param2}"%" limit #{param3},#{param4}
+  	</select>
+  	
+  	<insert id="saveApplication" parameterType="Approval">
+  		insert into approval values(#{appId},#{appTitle},#{sfId},#{dpmId},#{appTypeId},#{dayFlag},#{preRoleLevel},
+  		#{preDpmLevel},#{appContent},#{createDate},#{state},#{haveTime},#{process},#{approver},#{flag},#{result},
+  		#{resultDate},#{refuseReason})
+  	</insert>
+  	
+  	<!-- 准备审批 -->
+  	<select id="findApprovalVoByappId" parameterType="int" resultType="ApprovalVo">
+  		select a.*,t.appTypeName,s.sfRealName,d.dpmName,r.roleName 
+  		from approval a,approvalType t,staff s,department d,role r
+  		where a.sfId=s.sfId and a.appTypeId=t.appTypeId and s.dpmId=d.dpmId and s.roleId=r.roleId
+  		and a.appId=#{appId}
+  	</select>
+  	
+  	<!-- 人力部经理审批 -->
+  	<select id="findCountByLevelAndResult" resultType="int">
+  		select count(*) from approval where preDpmLevel=#{param1} and preRoleLevel=#{param2} and result is NULL 
+  	</select>
+  	
+  	<select id="findAppByLevelAndResult" resultType="ApprovalVo">
+  		select a.*,t.appTypeName,s.sfRealName,d.dpmName,r.roleName 
+  		from approval a,approvalType t,staff s,department d,role r
+  		where a.sfId=s.sfId and a.appTypeId=t.appTypeId and s.dpmId=d.dpmId and s.roleId=r.roleId
+  		and a.preDpmLevel=#{param1} and a.preRoleLevel=#{param2} and a.result is NULL limit #{param3},#{param4}
+  	</select>
+  	
+  	<!-- 部门经理审批/部门普通上级审批（非人力部） -->
+  	<select id="findCountBydpmIdAndroleLevel" resultType="int">
+  		select count(*) from approval where dpmId=#{param1} and preRoleLevel=#{param2} and result is NULL
+  	</select>
+  	
+  	<select id="findAppBydpmIdAndroleLevel" resultType="ApprovalVo">
+  		select a.*,t.appTypeName,s.sfRealName,d.dpmName,r.roleName 
+  		from approval a,approvalType t,staff s,department d,role r
+  		where a.sfId=s.sfId and a.appTypeId=t.appTypeId and s.dpmId=d.dpmId and s.roleId=r.roleId
+  		and a.dpmId=#{param1} and a.preRoleLevel=#{param2} and a.result is NULL limit #{param3},#{param4}
+  	</select>
+  	
+  	<select id="findAppByappId" parameterType="int" resultType="Approval">
+  		select * from approval where appId=#{appId}
+  	</select>
+  	
+  	<update id="updateApplication" parameterType="Approval">
+  		update approval set dpmId=#{dpmId},dayFlag=#{dayFlag},preRoleLevel=#{preRoleLevel},
+  		preDpmLevel=#{preDpmLevel},state=#{state},process=#{process},approver=#{approver},
+  		result=#{result},resultDate=#{resultDate},refuseReason=#{refuseReason} where appId=#{appId}
+  	</update>
+  	
+  	<select id="findAppByApprover" resultType="ApprovalVo">
+  		select a.*,t.appTypeName,s.sfRealName,d.dpmName,r.roleName 
+  		from approval a,approvalType t,staff s,department d,role r
+  		where a.sfId=s.sfId and a.appTypeId=t.appTypeId and s.dpmId=d.dpmId and s.roleId=r.roleId
+  		and find_in_set(#{param1},a.approver) and s.sfRealName like "%"#{param2}"%" limit #{param3},#{param4}
+  	</select>
+  	
+  	<select id="findCountWithResult" parameterType="string" resultType="int">
+  		select count(*) from approval a,staff s where a.sfId=s.sfId and a.result is not NULL and s.sfRealName like "%"#{sfRealName}"%" 
+  	</select>
+  	
+  	<select id="findAppWithResult" resultType="ApprovalVo">
+  		select a.*,t.appTypeName,s.sfRealName,d.dpmName,r.roleName 
+  		from approval a,approvalType t,staff s,department d,role r
+  		where a.sfId=s.sfId and a.appTypeId=t.appTypeId and s.dpmId=d.dpmId and s.roleId=r.roleId
+  		and a.result is not NULL and s.sfRealName like "%"#{param1}"%" limit #{param2},#{param3}
+  	</select>
+  	
+  	<delete id="deleteApproval">
+  		delete from approval where appId in
+  		<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+  			#{id}
+  		</foreach>
+  	</delete>
+  	
+  	<select id="findCountWithApprover" resultType="int">
+  		select count(*) from approval a,staff s where a.sfId=s.sfId and find_in_set(#{param1},a.approver) and s.sfRealName like "%"#{param2}"%" 
+  	</select>
+  	
+</mapper>

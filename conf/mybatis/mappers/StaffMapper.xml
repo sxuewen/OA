@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "mybatis-3-mapper.dtd" >
+
+<mapper namespace="cn.com.oa.mapper.StaffMapper">
+
+<resultMap type="Staff" id="staffResult">
+	<id column="sfId" property="sfId"/>
+	<result column="sfUserName" property="sfUserName"/>
+	<result column="sfPassword" property="sfPassword"/>
+	<result column="sfRealName" property="sfRealName"/>
+	<result column="sfSex" property="sfSex"/>
+	<result column="sfCard" property="sfCard"/>
+	<result column="sfPhone" property="sfPhone"/>
+	<result column="sfAddress" property="sfAddress"/>
+	<result column="sfEmail" property="sfEmail"/>
+	
+	<association property="dpmId" javaType="Department">
+		<id column="dpmId" property="dpmId"/>
+		<result column="dpmName" property="dpmName"/>
+		<result column="dpmDescription" property="dpmDescription"/>
+		<result column="dpmCreatDate" property="dpmCreatDate"/>
+		<result column="dpmLevel" property="dpmLevel"/>
+	</association>
+	
+	<association property="roleId" javaType="Role">
+		<id column="roleId" property="roleId"/>
+		<result column="roleName" property="roleName"/>
+		<result column="roleDescription" property="roleDescription"/>
+		<result column="roleLevel" property="roleLevel"/>
+	</association>
+	
+</resultMap>
+
+	<select id="login" resultMap="staffResult">
+		select s.*,d.dpmName,d.dpmDescription,d.dpmCreatDate,d.dpmLevel,r.roleName,r.roleDescription,r.roleLevel 
+		from staff s,department d,role r where s.dpmId=d.dpmId and s.roleId=r.roleId and
+		s.sfUserName=#{param1} and s.sfPassword=#{param2}
+	</select>
+	
+	
+	<select id="findStaffByroleIds" resultType="staff">
+		select * from staff where roleId in
+		<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</select>
+	
+	
+	<select id="findCount" resultType="int">
+		select count(*) from staff
+	</select>
+	
+	<!-- 分页查询所有员工的总体信息 -->
+	<select id="findAllStaffInfo" resultType="StaffInfo">
+		select s.sfId,s.sfUserName,s.sfRealName,d.dpmName,r.roleName from staff s,department d,role r 
+		where s.dpmId=d.dpmId and s.roleId=r.roleId limit #{param1},#{param2}
+	</select>
+	
+	<!-- 根据id查询员工的具体信息 -->
+	<select id="findStaffById" parameterType="int" resultType="StaffInfo">
+		select s.sfId,s.sfUserName,s.sfRealName,s.sfSex,s.sfCard,s.sfPhone,s.sfAddress,s.sfEmail,d.dpmName,r.roleName
+		from staff s,department d,role r where s.sfId=#{sfId} and s.dpmId=d.dpmId and s.roleId=r.roleId
+	</select>
+	
+	
+	<!-- 根据条件查询员工信息的总数 -->
+	<select id="findCountByCondition" resultType="int">
+		select count(*) from staff s,department d,role r where s.sfUserName like "%"#{param1}"%"
+		and d.dpmName like "%"#{param2}"%" and r.roleName like "%"#{param3}"%"
+		and s.dpmId=d.dpmId and s.roleId=r.roleId
+	</select>
+	
+	<!-- 根据条件分页查询员工总体信息 -->
+	<select id="findAllStaff" resultType="StaffInfo">
+		select s.sfId,s.sfUserName,s.sfRealName,d.dpmName,r.roleName from staff s,department d,role r where
+		s.sfUserName like "%"#{param1}"%" and d.dpmName like "%"#{param2}"%" and r.roleName like "%"#{param3}"%"
+		and s.dpmId=d.dpmId and s.roleId=r.roleId limit #{param4},#{param5} 
+	</select>
+	
+	<select id="checksfUserName" parameterType="string" resultType="staff">
+		select * from staff where sfUserName = #{sfUserName}
+	</select>
+	
+	<insert id="saveStaff" parameterType="staff">
+		insert into staff values(#{sfId},#{sfUserName},#{sfPassword},#{sfRealName},#{sfSex},#{sfCard},#{sfPhone},
+		#{sfAddress},#{sfEmail},#{dpmId.dpmId},#{roleId.roleId})
+	</insert>
+	
+	<update id="updateStaff" parameterType="staff">
+		update staff set sfSex=#{sfSex},sfPhone=#{sfPhone},sfAddress=#{sfAddress},sfEmail=#{sfEmail},dpmId=#{dpmId.dpmId},roleId=#{roleId.roleId}
+		where sfId=#{sfId}
+	</update>
+	
+	<delete id="deleteStaffByIds">
+		delete from staff where sfId in
+		<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<update id="savePersonalInfo" parameterType="staff">
+		update staff set sfSex=#{sfSex},sfPhone=#{sfPhone},sfAddress=#{sfAddress},sfEmail=#{sfEmail}
+		where sfId=#{sfId}
+	</update>
+	
+	<update id="updatePassword">
+		update staff set sfPassword=#{param1} where sfId=#{param2}
+	</update>
+  	
+  	<select id="findStaffBysfId" parameterType="int" resultMap="staffResult">
+  		select * from staff where sfId=#{sfId}
+  	</select>
+  	
+  	<select id="findStaffBydpmId" parameterType="int" resultType="staff">
+  		select * from staff where dpmId=#{dpmId}
+  	</select>
+</mapper>

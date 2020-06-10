@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "mybatis-3-mapper.dtd" >
+
+<mapper namespace="cn.com.oa.mapperForAndroid.NoticeMapperForAndroid">
+	<!-- 查询所有公告 -->
+  	<select id="findAllNoticeForAndroid" resultType="NoticeVo">
+		SELECT n.*,COUNT(sfId) AS yesNum FROM notice n,staff_notice s
+		WHERE n.notId=s.notId GROUP BY n.notDate DESC
+	</select>
+</mapper>

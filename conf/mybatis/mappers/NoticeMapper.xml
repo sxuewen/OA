@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "mybatis-3-mapper.dtd" >
+
+<mapper namespace="cn.com.oa.mapper.NoticeMapper">
+	
+	<select id="findCount" resultType="int">
+		select count(*) from notice
+	</select>
+	
+	<select id="findAllNotice" resultType="NoticeVo">
+		select n.*,count(sfId) as yesNum from notice n,staff_notice s
+		where n.notId=s.notId group by s.notId limit #{param1},#{param2}
+	</select>
+	
+  	<select id="findCountByCondition" parameterType="string" resultType="int">
+  		select count(*) from notice where notDate=#{notDate}
+  	</select>
+  	
+  	<select id="findNoticeByCondition" resultType="NoticeVo">
+  		select n.*,count(sfId) as yesNum from notice n,staff_notice s
+		where n.notDate=#{param1} and n.notId=s.notId group by s.notId limit #{param2},#{param3}
+  	</select>
+  	
+  	<select id="findNoticeVoById" parameterType="int" resultType="NoticeVo">
+  		select n.*,count(sfId) as yesNum from notice n,staff_notice s
+		where n.notId=#{notId} and n.notId=s.notId group by s.notId 
+  	</select>
+  	
+  	<update id="updateNotice" parameterType="notice">
+  		update notice set notTitle=#{notTitle},notContent=#{notContent} where notId=#{notId}
+  	</update>
+  	
+  	<delete id="deleteByIds">
+  		delete from notice where notId in
+  		<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+  			#{id}
+  		</foreach>
+  	</delete>
+  	
+  	<insert id="saveNotice" parameterType="notice">
+  		insert into notice values(#{notId},#{notTitle},#{notContent},#{notDate},#{adminName})
+  	</insert>
+  	
+  	<!-- <select id="findNoticeWithState" resultType="StaffNoticeVo">
+  		select n.*,sn.sfId,sn.state from notice n,staff_notice sn where n.notId=sn.notId limit #{param1},#{param2}
+  	</select> -->
+  	
+</mapper>

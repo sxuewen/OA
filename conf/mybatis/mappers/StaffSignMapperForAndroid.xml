@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "mybatis-3-mapper.dtd" >
+
+<mapper namespace="cn.com.oa.mapperForAndroid.StaffSignMapperForAndroid">
+	
+  	<insert id="addStaffSign" parameterType="StaffSign">
+  		insert into staff_sign values(#{id},#{sfId},#{signDate},#{ssAMStartTime},#{ssAMEndTime},#{ssPMStartTime},#{ssPMEndTime},#{signFlag},#{isWork},#{isRest},#{isLate},#{isTooLate},#{isBack},#{isLose},#{isAbsence},#{isOutside},#{isAddWork})
+  	</insert>
+  	
+  	<select id="getWorkCount"  resultType="int">
+  		SELECT COUNT(*) FROM staff_sign WHERE iswork=1;
+  	</select>
+  	
+  	<select id="getRestCount"  resultType="int">
+  		SELECT COUNT(*) FROM staff_sign WHERE isRest=1;
+  	</select>
+  	
+  	<select id="getLateCount"  resultType="int">
+  		SELECT COUNT(*) FROM staff_sign WHERE isLate=1;
+  	</select>
+  	
+  	<select id="getBackCount"  resultType="int">
+  		SELECT COUNT(*) FROM staff_sign WHERE isBack=1;
+  	</select>
+  	
+  	<select id="getLoseCount"  resultType="int">
+  		SELECT COUNT(*) FROM staff_sign WHERE isLose=1;
+  	</select>
+  	
+  	<select id="getAbsenceCount"  resultType="int">
+  		SELECT COUNT(*) FROM staff_sign WHERE isAbsence=1;
+  	</select>
+  	
+  	<select id="getOutsideCount"  resultType="int">
+  		SELECT COUNT(*) FROM staff_sign WHERE isOutside=1;
+  	</select>
+  	
+  	<select id="getAddWorkCount"  resultType="int">
+  		SELECT COUNT(*) FROM staff_sign WHERE isAddWork=1;
+  	</select>
+</mapper>

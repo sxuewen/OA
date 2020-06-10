@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "mybatis-3-mapper.dtd" >
+
+<mapper namespace="cn.com.oa.mapperForAndroid.DepartmentMapperForAndroid">
+	
+  	<select id="selectFirstDepartment" resultType="Department">
+  		SELECT * FROM department WHERE parentId IS NULL;
+  	</select>
+  	
+  	<select id="selectSecondDepartment" resultType="Department" parameterType="Integer">
+  		SELECT * FROM department WHERE parentId=#{partentId};
+  	</select>
+  	
+</mapper>

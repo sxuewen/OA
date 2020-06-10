@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "mybatis-3-mapper.dtd" >
+
+<mapper namespace="cn.com.oa.mapper.DepartmentMapper">
+
+
+	<select id="findCountByCondition" parameterType="string" resultType="int">
+		select count(*) from department where dpmName like "%"#{dpmName}"%" and parentId is NULL
+	</select>
+  	
+  	<select id="findAllDepartment" resultType="departmentVo">
+  		select * from department where dpmName like "%"#{param1}"%" and parentId is NULL limit #{param2},#{param3}
+  	</select>
+  	
+  	<select id="findAllDepartment2" resultType="departmentVo">
+  		select a.*,b.dpmName as parentName from department a,department b 
+  		where a.dpmName like "%"#{param1}"%" and a.parentId=b.dpmId limit #{param2},#{param3}
+  	</select>
+  	
+  	<insert id="saveDepartment" parameterType="department">
+  		insert into department values(#{dpmId},#{dpmName},#{dpmDescription},#{dpmCreatDate},#{parent.dpmId},#{dpmLevel})
+  	</insert>
+  	
+  	<select id="checkdpmName" parameterType="string" resultType="department">
+  		select * from department where dpmName = #{dpmName}
+  	</select>
+  	
+  	<select id="finddpmById" parameterType="int" resultType="department">
+  		select * from department where dpmId = #{dpmId}
+  	</select>
+  	
+  	<select id="finddpmVoById" parameterType="int" resultType="DepartmentVo">
+  		select a.*,b.dpmName as parentName from department a,department b 
+  		where a.dpmId=#{dpmId} and a.parentId=b.dpmId
+  	</select>
+  	
+  	<select id="findVoById" parameterType="int" resultType="DepartmentVo">
+  		select * from department where dpmId=#{dpmId}  
+  	</select>
+  	
+  	<update id="updateDepartment" parameterType="department">
+  		update department set dpmDescription = #{dpmDescription},dpmCreatDate = #{dpmCreatDate},dpmLevel = #{dpmLevel}
+  		where dpmId = #{dpmId}
+  	</update>
+  	
+  	<delete id="deleteDepartmentByIds">
+  		delete from department where dpmId in
+  		<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+  	</delete>
+  	
+  	<select id="findAllDepartments" resultType="department">
+  		select * from department
+  	</select>
+  	
+  	<select id="finddpmChildrenCount" parameterType="int" resultType="int">
+  		select count(*) from department where parentId=#{dpmId}
+  	</select>
+  	
+  	<select id="finddpmChildren" resultType="DepartmentVo">
+  		select a.*,b.dpmName as parentName from department a,department b 
+  		where a.parentId=#{param1} and a.parentId=b.dpmId limit #{param2},#{param3}
+  	</select>
+  	
+  	<select id="findCountByConditionChild" resultType="int">
+  		select count(*) from department where dpmName like "%"#{param1}"%" and parentId=#{param2}
+  	</select>
+  	
+  	<select id="findAllDepartmentChild" resultType="DepartmentVo">
+  		select a.*,b.dpmName as parentName from department a,department b 
+  		where a.dpmName like "%"#{param1}"%" and a.parentId=#{param2} and
+  		a.parentId=b.dpmId limit #{param3},#{param4}
+  	</select>
+  	
+  	<select id="finddpmByIds" resultType="department">
+  		select * from department where parentId in
+  		<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+  	</select>
+  	
+  	<select id="finddpmIdBydpmLevel" parameterType="int" resultType="int">
+  		select dpmId from department where dpmLevel=#{dpmLevel}
+  	</select>
+  	
+  	<select id="findDpmNoParent" resultType="department">
+  		select * from department where parentId is NULL
+  	</select>
+  	
+  	<select id="findChildrenBydpmId" parameterType="int" resultType="department">
+  		select * from department where parentId=#{dpmId}
+  	</select>
+  	
+</mapper>

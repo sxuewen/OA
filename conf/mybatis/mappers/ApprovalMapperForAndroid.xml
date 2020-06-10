@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "mybatis-3-mapper.dtd" >
+
+<mapper namespace="cn.com.oa.mapperForAndroid.ApprovalMapperForAndroid">
+	
+  	<insert id="addApproval" parameterType="cn.com.oa.pojo.Approval">
+  		insert into approval values(#{appId},#{appTitle},#{sfId},#{dpmId},#{appTypeId},#{dayFlag},#{preRoleLevel},
+  		#{preDpmLevel},#{appContent},#{createDate},#{state},#{haveTime},#{process},#{approver},#{flag},#{result},#{resultDate},#{refuseReason})
+  	</insert>
+  	
+  	<select id="selectApprovalIsOverTime"  resultType="Approval">
+  		SELECT * FROM approval WHERE sfId=#{0} AND appTypeId=3 AND createDate LIKE #{1}'%'
+  	</select>
+  	
+  	<select id="selectApprovalBySfId" parameterType="int" resultType="cn.com.oa.pojo.ApprovalVo">
+  		SELECT a.*,t.appTypeName,s.sfRealName,d.dpmName,r.roleName 
+  		FROM approval a,approvalType t,staff s,department d,role r
+  		WHERE a.sfId=s.sfId AND a.appTypeId=t.appTypeId AND s.dpmId=d.dpmId AND s.roleId=r.roleId
+  		AND a.sfid = #{sfId}
+  	</select>
+  	
+  	<select id="selectApprovalHasApprovaled" parameterType="int" resultType="cn.com.oa.pojo.ApprovalVo">
+  		SELECT a.*,t.appTypeName,s.sfRealName,d.dpmName,r.roleName 
+  		FROM approval a,approvalType t,staff s,department d,role r
+  		WHERE a.sfId=s.sfId AND a.appTypeId=t.appTypeId AND s.dpmId=d.dpmId AND s.roleId=r.roleId
+  		AND a.`preRoleLevel` = #{preRoleLevel} AND a.state=2
+  	</select>
+  	
+  	<select id="selectApprovalWaitForApproval" parameterType="int" resultType="cn.com.oa.pojo.ApprovalVo">
+  		SELECT a.*,t.appTypeName,s.sfRealName,d.dpmName,r.roleName 
+  		FROM approval a,approvalType t,staff s,department d,role r
+  		WHERE a.sfId=s.sfId AND a.appTypeId=t.appTypeId AND s.dpmId=d.dpmId AND s.roleId=r.roleId
+  		AND a.`preRoleLevel` = #{param1} AND a.`preDpmLevel`=#{param2} AND a.state=0
+  	</select>
+  	
+ 	<select id="selectApprovalVoByappId" parameterType="int" resultType="cn.com.oa.pojo.ApprovalVo">
+  		SELECT a.*,t.appTypeName,s.sfRealName,d.dpmName,r.roleName 
+  		FROM approval a,approvalType t,staff s,department d,role r
+  		WHERE a.sfId=s.sfId AND a.appTypeId=t.appTypeId AND s.dpmId=d.dpmId AND s.roleId=r.roleId
+  		AND a.appId = #{appId}
+  	</select>
+  	
+  	<update id="updateApproval" parameterType="Approval">
+  		update approval set appTitle=#{appTitle},sfId=#{sfId},dpmId=#{dpmId},appTypeId=#{appTypeId},dayFlag=#{dayFlag},preRoleLevel=#{preRoleLevel},
+  		preDpmLevel=#{preDpmLevel},appContent=#{appContent},createDate=#{createDate},state=#{state},haveTime=#{haveTime},process=#{process},approver=#{approver},
+  		flag=#{flag},result=#{result},resultDate=#{resultDate},refuseReason=#{refuseReason} where appId=#{appId}
+  	</update>
+  	
+  	<select id="selectApprovalByappId" parameterType="int" resultType="Approval">
+  		SELECT * from approval where appId = #{appId}
+  	</select>
+  	
+  	
+</mapper>

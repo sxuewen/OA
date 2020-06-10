@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "mybatis-3-mapper.dtd" >
+
+<mapper namespace="cn.com.oa.mapperForAndroid.StaffNoticeMapperForAndroid">
+  	
+  	<!-- 已读 -->
+	<insert id="yesReadForAndroid">
+		INSERT INTO `staff_notice`(notId,sfId,state)VALUES(#{param1},#{param2},1)
+	</insert>
+	<!-- 点击某一个公告时查看员工是否已读 -->
+	<select id="selectIsYesRead" resultType="NoticeVo">
+		SELECT * FROM staff_notice WHERE notId=#{param1} AND sfId = #{param2}
+	</select>
+  	
+</mapper>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "mybatis-3-mapper.dtd" >
+
+<mapper namespace="cn.com.oa.mapper.StaffNoticeMapper">
+	
+  	<insert id="addStaffNotice" parameterType="StaffNotice">
+  		insert into staff_notice values(#{id},#{notId},#{sfId},#{state})
+  	</insert>
+  	
+  	<select id="findNoticeBysfAndnot" resultType="StaffNotice">
+  		select * from staff_notice where sfId=#{param1} and notId=#{param2}
+  	</select>
+  	
+</mapper>

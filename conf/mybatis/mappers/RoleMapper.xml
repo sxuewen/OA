@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "mybatis-3-mapper.dtd" >
+
+<mapper namespace="cn.com.oa.mapper.RoleMapper">
+
+	<resultMap type="Role" id="roleResult">
+		<id column="roleId" property="roleId"/>
+		<result column="roleName" property="roleName"/>
+		<result column="roleDescription" property="roleDescription"/>
+		<result column="roleLevel" property="roleLevel"/>
+		
+		<association property="dpmId" javaType="Department">
+			<id column="dpmId" property="dpmId"/>
+			<result column="dpmName" property="dpmName"/>
+			<result column="dpmDescription" property="dpmDescription"/>
+			<result column="dpmCreatDate" property="dpmCreatDate"/>
+			<result column="dpmLevel" property="dpmLevel"/>
+		</association>
+				
+	</resultMap>
+
+
+	<select id="findCountByCondition" resultType="int">
+		select count(*) from role r,department d where r.roleName like "%"#{param1}"%" 
+		and d.dpmName like "%"#{param2}"%" and r.dpmId=d.dpmId
+	</select>
+  	
+  	<select id="findAllRole" resultType="roleInfo">
+  		select r.roleId,r.roleName,r.roleDescription,d.dpmName,r.roleLevel from role r,department d 
+  		where r.roleName like "%"#{param1}"%" and d.dpmName like "%"#{param2}"%" and
+  	    r.dpmId=d.dpmId limit #{param3},#{param4}
+  	</select>
+  	
+  	<insert id="saveRole" parameterType="role">
+  		insert into role values(#{roleId},#{roleName},#{roleDescription},#{dpmId.dpmId},#{roleLevel})
+  	</insert>
+  	
+  	<select id="checkRoleName" resultType="role">
+  		select * from role where roleName = #{param1} and dpmId = #{param2}
+  	</select>
+  	
+  	<select id="findRoleById" parameterType="int" resultType="roleInfo">
+  		select r.roleId,r.roleName,r.roleDescription,d.dpmName,r.roleLevel from role r,department d
+  		where r.roleId = #{roleId} and r.dpmId=d.dpmId
+  	</select>
+  	
+  	<update id="updateRole" parameterType="role">
+  		update role set roleDescription = #{roleDescription},roleLevel = #{roleLevel} where roleId = #{roleId}
+  	</update>
+  	
+  	<delete id="deleteRoleByIds">
+  		delete from role where roleId in
+  		<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+  	</delete> 
+  	
+  	<select id="findAllRoles" resultType="role">
+  		select * from role
+  	</select>
+  	
+  	<select id="findRoleBydpmIds" resultType="role">
+  		select * from role where dpmId in
+  		<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+  	</select>
+  	
+  	<select id="findRoleInfoById" parameterType="int" resultType="role">
+  		select * from role where roleId = #{roleId}
+  	</select>
+  	
+  	<select id="selectRoleBydpmId" parameterType="int" resultType="role">
+  		select * from role where dpmId = #{dpmId}
+  	</select>
+  	
+  	<select id="findCountBydpmId" parameterType="int" resultType="int">
+  		select count(*) from role where dpmId = #{dpmId}
+  	</select>
+  	
+</mapper>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "mybatis-3-mapper.dtd" >
+
+<mapper namespace="cn.com.oa.mapper.StaffSignMapper">
+	
+  	<select id="findSignWithCurrent" resultType="StaffSign">
+  		select * from staff_sign where sfId=#{param1} and signDate like "%"#{param2}"%"
+  	</select>
+  	
+  	<select id="findSignWithSixMonth" resultType="StaffSign">
+  		select * from staff_sign where sfId=#{param1} and signDate between #{param2} and #{param3} 
+  	</select>
+  	
+</mapper>

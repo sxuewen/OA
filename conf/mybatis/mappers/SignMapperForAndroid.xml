@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "mybatis-3-mapper.dtd" >
+
+<mapper namespace="cn.com.oa.mapperForAndroid.SignMapperForAndroid">
+	
+  	<select id="getSign" resultType="Sign">
+  		select * from sign; 
+  	</select>
+  	
+</mapper>

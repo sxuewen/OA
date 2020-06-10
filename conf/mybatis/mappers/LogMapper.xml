@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "mybatis-3-mapper.dtd" >
+
+<mapper namespace="cn.com.oa.mapper.LogMapper">
+	
+    <select id="findCount" resultType="int">
+  	    select count(*) from log
+    </select>
+  	
+  	<select id="findAllLog" resultType="LogVo">
+  		select l.logId,l.logType,l.logContent,l.logDate,s.sfId,s.sfUserName,d.dpmId,
+  		d.dpmName from log l,staff s,department d
+  		where s.dpmId=d.dpmId and l.sfId=s.sfId limit #{param1},#{param2}
+  	</select>
+  	
+  	<select id="findLogById" parameterType="int" resultType="LogVo">
+  		select l.logId,l.logType,l.logContent,l.logDate,s.sfId,s.sfUserName,d.dpmId,
+  		d.dpmName from log l,staff s,department d
+  		where s.dpmId=d.dpmId and l.sfId=s.sfId and l.logId=#{logId} 
+  	</select>
+  	
+  	<insert id="saveLog" parameterType="log">
+  		insert into log values(#{logId},#{sfId},#{dpmId},#{logType},#{logContent},#{logDate})
+  	</insert>
+  	
+  	<update id="updateLog" parameterType="log">
+  		update log set logContent=#{logContent} where logId=#{logId}
+  	</update>
+  	
+  	<select id="findCountByCondition" parameterType="string" resultType="int">
+  		select count(*) from log where logDate like "%"#{logDate}"%"
+  	</select>
+  	
+  	<select id="findLogByCondition" resultType="LogVo">
+  		select l.logId,l.logType,l.logContent,l.logDate,s.sfId,s.sfUserName,d.dpmId,
+  		d.dpmName from log l,staff s,department d where s.dpmId=d.dpmId and l.sfId=s.sfId
+  		and l.logDate like "%"#{param1}"%" limit #{param2},#{param3}
+  	</select>
+  	
+  	<delete id="deleteByIds">
+  		delete from log where logId in
+  		<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+  			#{id}
+  		</foreach>
+  	</delete>
+  	
+  	<select id="findCountBydpmId" resultType="int">
+  		select count(*) from log where dpmId=#{param1} and logDate like "%"#{param2}"%"
+  	</select>
+  	
+  	<select id="findLogBydpmId" resultType="LogVo">
+  		select l.logId,l.logType,l.logContent,l.logDate,s.sfId,s.sfUserName,d.dpmId,
+  		d.dpmName from log l,staff s,department d where s.dpmId=d.dpmId and l.sfId=s.sfId
+  		and l.dpmId=#{param1} and l.logDate like "%"#{param2}"%" limit #{param3},#{param4}
+  	</select>
+  	
+  	
+  	
+  	
+  	
+  	
+</mapper>
